@@ -904,7 +904,9 @@
             void cardEl.offsetWidth;
             cardEl.classList.add("is-wrong");
           }
-          b.recordMistake?.(spkItem);
+          b.recordMistake?.(unitId, spkItem);
+          b.renderMistakesSection?.();
+          b.renderHeader?.();
           global.MunCompanion?.onWrong?.(`Hic, ống nước chưa khớp rồi! Hãy bấm loa nghe lại rồi nối đúng mẫu câu nhé! 🥺`);
           if (fb) {
             fb.className = "feedback-banner show err";
