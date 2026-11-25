@@ -170,14 +170,14 @@
         text-align: center;
       }
       .mun-avatar-frame {
-        width: 118px;
-        height: 118px;
-        margin: 0 auto;
-        border-radius: 28px;
+        width: min(215px, 60vw);
+        height: min(215px, 60vw);
+        margin: 4px auto 2px;
+        border-radius: 32px;
         overflow: hidden;
-        border: 4px solid #ffffff;
-        box-shadow: 0 10px 24px rgba(217, 155, 11, 0.22);
-        background: #f5ecd8;
+        border: 5px solid #ffffff;
+        box-shadow: 0 12px 28px rgba(217, 155, 11, 0.24);
+        background: #d8cdb8;
         cursor: pointer;
         transition: transform 0.22s ease;
       }
@@ -185,7 +185,9 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center 42%;
+        object-position: center 44%;
+        transform: scale(1.24);
+        transform-origin: center 45%;
         display: block;
       }
       .mun-mood-normal { animation: munBreathe 3.2s ease-in-out infinite; }
@@ -215,23 +217,43 @@
       .play-mun-dock {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 6px 12px;
-        border-radius: 20px;
+        gap: 12px;
+        padding: 7px 14px 7px 8px;
+        border-radius: 22px;
         background: #fffdf0;
-        border: 2px solid #ffe27a;
+        border: 2.5px solid #ffe27a;
+        box-shadow: 0 6px 16px rgba(217, 155, 11, 0.16);
         cursor: pointer;
-        max-width: min(340px, 100%);
+        max-width: min(410px, 100%);
       }
       .play-mun-thumb {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
+        width: 78px;
+        height: 78px;
+        border-radius: 18px;
         overflow: hidden;
-        border: 2px solid #ffffff;
+        border: 3px solid #ffffff;
+        box-shadow: 0 4px 12px rgba(45, 43, 85, 0.14);
+        background: #d8cdb8;
         flex-shrink: 0;
       }
-      .play-mun-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
+      .play-mun-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 44%;
+        transform: scale(1.28);
+        transform-origin: center 45%;
+        display: block;
+      }
+      .mun-chat-avatar-lg {
+        width: 84px;
+        height: 84px;
+        border-radius: 22px;
+      }
+      @media (max-width: 600px) {
+        .play-mun-thumb { width: 64px; height: 64px; }
+        .mun-chat-avatar-lg { width: 68px; height: 68px; }
+      }
 
       /* Chat Modal */
       .mun-chat-modal {
@@ -382,8 +404,8 @@
           <img src="${imgSrc}" alt="Mun ${meta.label}" />
         </div>
         <div style="min-width:0;">
-          <div style="font-size:12px; font-weight:900; color:#7a5200;">🐥 Mun • ${meta.label}</div>
-          <div style="font-size:11.5px; font-weight:700; color:#2d2b55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:210px;">
+          <div style="font-size:14px; font-weight:900; color:#7a5200;">🐥 Mun • ${meta.label}</div>
+          <div style="font-size:12.5px; font-weight:700; color:#2d2b55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:250px;">
             ${munState.bubble}
           </div>
         </div>
@@ -392,7 +414,7 @@
 
     const chatAv = document.getElementById("mun-chat-avatar");
     if (chatAv) {
-      chatAv.className = `play-mun-thumb ${meta.cls}`;
+      chatAv.className = `play-mun-thumb mun-chat-avatar-lg ${meta.cls}`;
       chatAv.innerHTML = `<img src="${imgSrc}" alt="Mun" />`;
     }
     const chatMoodLbl = document.getElementById("mun-chat-mood");
@@ -447,7 +469,7 @@
     modal.innerHTML = `
       <div class="play-topbar" style="background:linear-gradient(90deg, #fff5bc, #ffeaf5, #e8fff9);">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div id="mun-chat-avatar" class="play-mun-thumb ${meta.cls}" style="width:52px; height:52px;">
+          <div id="mun-chat-avatar" class="play-mun-thumb mun-chat-avatar-lg ${meta.cls}">
             <img src="${imgSrc}" alt="Mun" />
           </div>
           <div>
