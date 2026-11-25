@@ -674,7 +674,7 @@
               <div class="hero-kicker">🌈 Kawaii Learning Playland • Global Success 1–5</div>
               <h2 class="hero-title" id="hero-greeting">Chào mừng bé đến Vương Quốc Tiếng Anh Vui Nhộn! ✨</h2>
               <p class="hero-desc">
-                Khám phá 20 trò chơi tương tác rực rỡ sắc màu: Phonics Racing, Block Blast, Bingo, Bong bóng từ vựng, Ghép tranh, Vòng quay, Bàn cờ đội nhóm... Học vui mỗi ngày để tặng quà cho Mèo Mochi nhé!
+                Khám phá 21 trò chơi tương tác rực rỡ sắc màu: Tưới Hoa Mẫu Câu, Phonics Racing, Block Blast, Bingo, Bong bóng từ vựng, Ghép tranh, Vòng quay, Bàn cờ... Học vui mỗi ngày để tặng quà cho Mèo Mochi nhé!
               </p>
               <div class="btn-group">
                 <button class="btn-3d btn-pink" id="btn-hero-play">🎮 Khám phá Kho Trò Chơi</button>
@@ -732,7 +732,7 @@
 
           <!-- Quick Filter Pills -->
           <div class="btn-group" id="quick-filter-pills" style="margin-bottom:12px;">
-            <button type="button" class="btn-3d btn-pink" data-qfilter="all">🌟 Tất cả (20)</button>
+            <button type="button" class="btn-3d btn-pink" data-qfilter="all">🌟 Tất cả (21)</button>
             <button type="button" class="btn-3d btn-soft-pink" data-qfilter="featured">🔥 Nổi bật</button>
             <button type="button" class="btn-3d btn-soft-sky" data-qfilter="vocab">🔤 Từ vựng</button>
             <button type="button" class="btn-3d btn-soft-mint" data-qfilter="spelling">🎵 Phonics &amp; Ghép chữ</button>
@@ -912,6 +912,7 @@
   <script src="mun-ai.js"></script>
   <script src="block-blast.js"></script>
   <script src="demo-games-pack.js"></script>
+  <script src="flower-pipe.js"></script>
   <script>
     // =========================================================================
     // 1. BUILT-IN CURRICULUM (TIẾNG ANH 5 GLOBAL SUCCESS TẬP 1 + 2 + THEMATIC SETS)
@@ -1242,7 +1243,8 @@
       { id: "mochi-merge", title: "Mochi Merge – Ghép Âm Vần", desc: "Nghe phát âm, chọn âm đầu và vần ghép thành từ tiếng Anh hoàn chỉnh (Easy Peasy Demo style).", subject: "spelling", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#ffe9f4,#fff7cf)", icon: "🍡", badge: "Demo • Phonics Merge", guide: "Nghe phát âm và chọn 1 Âm đầu + 1 Vần ghép khớp nhau để tạo thành từ hoàn chỉnh (+2 🌸)!" },
       { id: "peekaboo-pals", title: "Peekaboo Pals! – Ú Òa Bóng Đen", desc: "Đoán bạn nhỏ hay đồ vật nào đang trốn sau chiếc bóng bí ẩn để mở màn Ú Òa!", subject: "vocab", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#e8fff9,#ffe4f1)", icon: "🐾", badge: "Demo • Solo Game", guide: "Quan sát hình bóng đen silhouette, nghe gợi ý và chọn từ đúng để mở màn Peekaboo (+2 🌸)!" },
       { id: "sneaky-spotlight", title: "Sneaky Spotlight – Cửa Bí Ẩn", desc: "Nghe loa gọi từ và mở đúng cánh cửa nơi từ vựng đang ẩn nấp phía sau!", subject: "listening", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#fff0d6,#ece8ff)", icon: "🔎", badge: "Demo • Hidden Game", guide: "Lắng nghe từ cần tìm và mở cánh cửa bí ẩn nơi từ đó đang trốn (+2 🌸)!" },
-      { id: "shadow-fusion", title: "Shadow Fusion – Ghép Hình Khớp Bóng", desc: "Kéo thanh trượt căn chỉnh hai nửa hình khớp vào nhau để làm hiện bức tranh từ vựng!", subject: "vocab", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#e2f6ff,#ffe2f1)", icon: "✨", badge: "Demo • Shadow Puzzle", guide: "Kéo thanh trượt để ghép khít 2 nửa hình ảnh từ vựng vào đúng vị trí và nhấn Khớp Hình (+3 🌸)!" }
+      { id: "shadow-fusion", title: "Shadow Fusion – Ghép Hình Khớp Bóng", desc: "Kéo thanh trượt căn chỉnh hai nửa hình khớp vào nhau để làm hiện bức tranh từ vựng!", subject: "vocab", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#e2f6ff,#ffe2f1)", icon: "✨", badge: "Demo • Shadow Puzzle", guide: "Kéo thanh trượt để ghép khít 2 nửa hình ảnh từ vựng vào đúng vị trí và nhấn Khớp Hình (+3 🌸)!" },
+      { id: "water-sentences", title: "Tưới Hoa Mẫu Câu – Listen & Water", desc: "Nghe loa đọc mẫu câu Activity 2 (Lesson 1 & 2 từng Unit) rồi nối ống nước tưới cho bông hoa nở rộ!", subject: "listening", grades: ["1-2","3","4","5"], type: "puzzle", bg: "linear-gradient(135deg,#1e2a6b,#2f5aa8)", icon: "🚿", badge: "Mới • Lesson 1 & 2", guide: "Chạm vào nút loa 🔊 bên trái để nghe mẫu câu Listen, point and say (Lesson 1 & 2), rồi kéo vòi nước (hoặc chạm) nối vào thẻ câu khớp đúng để nước chảy làm nở bông hoa (+2 🌸 mỗi bông)!" }
     ];
 
     const BADGE_DEFS = [
@@ -1658,7 +1660,7 @@
       const type = document.getElementById("filter-type").value;
       const isTeacher = state.ui.teacherMode !== false;
 
-      const FEATURED_IDS = new Set(["phonics-racing", "block-blast", "bubble", "bingo", "mochi-merge", "peekaboo-pals", "sneaky-spotlight", "shadow-fusion", "board", "wheel"]);
+      const FEATURED_IDS = new Set(["water-sentences", "phonics-racing", "block-blast", "bubble", "bingo", "mochi-merge", "peekaboo-pals", "sneaky-spotlight", "shadow-fusion", "board", "wheel"]);
       const filtered = GAME_CATALOG.filter(g => {
         if (window.__featuredOnly && !FEATURED_IDS.has(g.id)) return false;
         if (q && !(g.title.toLowerCase().includes(q) || g.desc.toLowerCase().includes(q) || g.badge.toLowerCase().includes(q))) return false;
@@ -1730,7 +1732,8 @@
           "mochi-merge": `<circle cx="58" cy="48" r="24" fill="#ffe27a" stroke="#fff" stroke-width="3"/><text x="58" y="54" text-anchor="middle" font-size="18" font-weight="900" fill="#7a5200">c</text><circle cx="118" cy="48" r="26" fill="#a0f3ed" stroke="#fff" stroke-width="3"/><text x="118" y="54" text-anchor="middle" font-size="18" font-weight="900" fill="#0d6e5a">-at</text>`,
           "peekaboo-pals": `<circle cx="90" cy="46" r="30" fill="#fff"/><text x="90" y="56" text-anchor="middle" font-size="36" style="filter:brightness(0);">🐾</text>`,
           "sneaky-spotlight": `<rect x="32" y="14" width="32" height="66" rx="8" fill="#a9adff" stroke="#fff" stroke-width="2.5"/><rect x="74" y="14" width="32" height="66" rx="8" fill="#ff89bf" stroke="#fff" stroke-width="2.5"/><rect x="116" y="14" width="32" height="66" rx="8" fill="#5ce1c6" stroke="#fff" stroke-width="2.5"/><text x="90" y="54" text-anchor="middle" font-size="20">🚪</text>`,
-          "shadow-fusion": `<circle cx="72" cy="48" r="26" fill="#fff" stroke="#6fd3ff" stroke-width="3"/><circle cx="108" cy="48" r="26" fill="#fff" stroke="#ff89bf" stroke-width="3"/><text x="90" y="56" text-anchor="middle" font-size="26">✨</text>`
+          "shadow-fusion": `<circle cx="72" cy="48" r="26" fill="#fff" stroke="#6fd3ff" stroke-width="3"/><circle cx="108" cy="48" r="26" fill="#fff" stroke="#ff89bf" stroke-width="3"/><text x="90" y="56" text-anchor="middle" font-size="26">✨</text>`,
+          "water-sentences": `<rect x="0" y="72" width="180" height="22" fill="#22c55e"/><circle cx="28" cy="46" r="14" fill="#f97316" stroke="#fff" stroke-width="2.5"/><text x="28" y="51" text-anchor="middle" font-size="13">🔊</text><path d="M42 46 C56 46, 54 34, 68 34" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" fill="none"/><rect x="68" y="22" width="52" height="24" rx="12" fill="#fff"/><text x="94" y="38" text-anchor="middle" font-size="10" font-weight="900" fill="#1e293b">Listen!</text><line x1="120" y1="34" x2="142" y2="54" stroke="#7dd3fc" stroke-width="4"/><polygon points="136,58 162,58 158,74 140,74" fill="#ea8c44" stroke="#fff" stroke-width="1.5"/><text x="149" y="50" text-anchor="middle" font-size="20">🌸</text>`
         };
         return `<svg width="176" height="94" viewBox="0 0 180 94" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="24" cy="20" r="12" fill="rgba(255,255,255,0.45)"/>
@@ -2060,6 +2063,7 @@
       clearPlayTimer();
       if (window.PhonicsRacingModule) window.PhonicsRacingModule.cleanup();
       if (window.BlockBlastModule) window.BlockBlastModule.cleanup();
+      if (window.FlowerPipeModule) window.FlowerPipeModule.cleanup();
       if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
       document.getElementById("play-modal").classList.remove("is-fs");
       document.getElementById("play-backdrop").classList.add("hidden");
@@ -2136,6 +2140,7 @@
       clearPlayTimer();
       if (window.PhonicsRacingModule) window.PhonicsRacingModule.cleanup();
       if (window.BlockBlastModule) window.BlockBlastModule.cleanup();
+      if (window.FlowerPipeModule) window.FlowerPipeModule.cleanup();
       const body = document.getElementById("play-body");
       const id = activePlay.gameId;
       const set = activePlay.lessonSet;
@@ -2143,6 +2148,10 @@
       if (id === "block-blast" && window.BlockBlastModule) {
         if (window.MunCompanion) window.MunCompanion.resetIdleTimer();
         return window.BlockBlastModule.renderGame(body, set, activePlay.isPreviewDraft);
+      }
+      if (id === "water-sentences" && window.FlowerPipeModule) {
+        if (window.MunCompanion) window.MunCompanion.resetIdleTimer();
+        return window.FlowerPipeModule.renderGame(body, set, activePlay.isPreviewDraft);
       }
       if (["mochi-merge", "peekaboo-pals", "sneaky-spotlight", "shadow-fusion"].includes(id) && window.DemoGamesPack) {
         if (window.MunCompanion) window.MunCompanion.resetIdleTimer();
@@ -3704,7 +3713,7 @@
     }
 
     const GUIDE_STEPS = [
-      { emoji: "🎪🎮", title: "Bước 1: Chọn trò chơi Kawaii yêu thích", desc: "Khám phá 20 trò chơi tương tác như Phonics Racing, Block Blast, Bingo, Bong bóng từ vựng, Ghép tranh, Vòng quay, Bàn cờ... Mỗi trò chơi đều có âm thanh bản xứ chuẩn!" },
+      { emoji: "🎪🎮", title: "Bước 1: Chọn trò chơi Kawaii yêu thích", desc: "Khám phá 21 trò chơi tương tác như Tưới Hoa Mẫu Câu, Phonics Racing, Block Blast, Bingo, Bong bóng từ vựng, Ghép tranh, Vòng quay, Bàn cờ... Mỗi trò chơi đều có âm thanh bản xứ chuẩn!" },
       { emoji: "🌸📝", title: "Bước 2: Thu thập Bông hoa & Ôn Kho Lỗi Sai", desc: "Trả lời đúng để nhận Bông hoa 🌸. Nếu trả lời sai cũng không mất điểm — từ đó được lưu vào Kho Lỗi Sai để bé luyện lại!" },
       { emoji: "🐱💖", title: "Bước 3: Chăm sóc Mèo Mochi & Thi đấu lớp học", desc: "Dùng Bông hoa 🌸 mua sữa, cá hồi và đồ chơi cho Mèo Mochi! Giáo viên có thể bật nút ✏️ Edit để tạo game từ PDF/DOCX." }
     ];
