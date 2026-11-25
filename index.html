@@ -428,7 +428,7 @@
     .overlay-backdrop.hidden { display: none; }
 
     .play-modal {
-      width: 100%; max-width: 980px; max-height: 94vh;
+      width: 100%; max-width: 1200px; max-height: 94vh;
       display: flex; flex-direction: column;
       background: linear-gradient(160deg, #fffafd 0%, #f5ffff 55%, #fffef5 100%);
       border: 5px solid #ffffff; border-radius: 32px;
@@ -443,7 +443,19 @@
       background: linear-gradient(90deg, #ffeaf5, #e8fff9, #fff7d6);
       border-bottom: 3px solid #ffffff;
     }
-    .play-body { padding: 20px; overflow-y: auto; flex: 1; }
+    .play-content-row {
+      display: flex; flex: 1; min-height: 0; overflow: hidden;
+    }
+    .play-body { padding: 20px; overflow-y: auto; flex: 1; min-width: 0; }
+    .play-mun-aside {
+      width: 268px; flex-shrink: 0; padding: 16px;
+      background: linear-gradient(180deg, rgba(255, 252, 234, 0.92), rgba(255, 240, 249, 0.9));
+      border-left: 3px solid #ffffff;
+      overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    }
+    @media (max-width: 920px) {
+      .play-mun-aside { display: none; }
+    }
 
     /* Editor Modal */
     .editor-modal {
@@ -879,7 +891,10 @@
           <button class="btn-3d btn-soft-pink" id="play-btn-edit" title="Chỉnh sửa nội dung game">✏️ Edit</button>
         </div>
       </div>
-      <div class="play-body" id="play-body"></div>
+      <div class="play-content-row">
+        <div class="play-body" id="play-body"></div>
+        <aside class="play-mun-aside" id="play-mun-aside"></aside>
+      </div>
     </div>
   </div>
 

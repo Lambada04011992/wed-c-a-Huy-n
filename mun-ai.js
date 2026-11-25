@@ -178,10 +178,10 @@
         text-align: center;
       }
       .mun-avatar-frame {
-        width: min(240px, 66vw);
-        height: min(240px, 66vw);
+        width: min(265px, 72vw);
+        height: min(265px, 72vw);
         margin: 4px auto 4px;
-        border-radius: 34px;
+        border-radius: 36px;
         overflow: hidden;
         border: 5px solid #ffffff;
         box-shadow: 0 14px 32px rgba(217, 155, 11, 0.25);
@@ -221,26 +221,29 @@
         box-shadow: 0 4px 12px rgba(217, 155, 11, 0.12);
       }
 
-      /* Compact Dock inside Play Overlay */
+      /* Compact Dock inside Play Overlay (shown on <=920px; desktop uses large #play-mun-aside) */
       .play-mun-dock {
-        display: flex;
+        display: none;
         align-items: center;
         gap: 12px;
-        padding: 7px 14px 7px 8px;
-        border-radius: 22px;
+        padding: 8px 14px 8px 8px;
+        border-radius: 24px;
         background: #fffdf0;
         border: 2.5px solid #ffe27a;
         box-shadow: 0 6px 16px rgba(217, 155, 11, 0.16);
         cursor: pointer;
-        max-width: min(410px, 100%);
+        max-width: min(440px, 100%);
+      }
+      @media (max-width: 920px) {
+        .play-mun-dock { display: flex; }
       }
       .play-mun-thumb {
-        width: 88px;
-        height: 88px;
-        border-radius: 20px;
+        width: 98px;
+        height: 98px;
+        border-radius: 22px;
         overflow: hidden;
-        border: 3.5px solid #ffffff;
-        box-shadow: 0 6px 14px rgba(45, 43, 85, 0.16);
+        border: 4px solid #ffffff;
+        box-shadow: 0 6px 16px rgba(45, 43, 85, 0.18);
         background: #d8cdb8;
         flex-shrink: 0;
         transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -254,14 +257,41 @@
         transform-origin: center 45%;
         display: block;
       }
+      .mun-aside-card {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+      }
+      .mun-aside-frame {
+        width: 212px;
+        height: 212px;
+        border-radius: 34px;
+        overflow: hidden;
+        border: 5px solid #ffffff;
+        box-shadow: 0 14px 32px rgba(217, 155, 11, 0.25);
+        background: #d8cdb8;
+        cursor: pointer;
+      }
+      .mun-aside-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 44%;
+        transform: scale(1.26);
+        transform-origin: center 45%;
+        display: block;
+      }
       .mun-chat-avatar-lg {
-        width: 92px;
-        height: 92px;
-        border-radius: 24px;
+        width: 112px;
+        height: 112px;
+        border-radius: 26px;
       }
       @media (max-width: 600px) {
-        .play-mun-thumb { width: 70px; height: 70px; }
-        .mun-chat-avatar-lg { width: 74px; height: 74px; }
+        .play-mun-thumb { width: 84px; height: 84px; }
+        .mun-chat-avatar-lg { width: 86px; height: 86px; }
       }
 
       /* Floating Post-Answer Mascot Reaction Spotlight (Non-blocking!) */
@@ -270,9 +300,9 @@
         right: 22px;
         bottom: 20px;
         z-index: 88;
-        width: 246px;
-        padding: 12px 14px 14px;
-        border-radius: 28px;
+        width: 280px;
+        padding: 14px 16px 16px;
+        border-radius: 30px;
         background: linear-gradient(160deg, rgba(255, 254, 245, 0.97), rgba(255, 242, 250, 0.96));
         border: 4px solid #ffffff;
         box-shadow: 0 18px 44px rgba(45, 43, 85, 0.24);
@@ -280,7 +310,7 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 8px;
+        gap: 9px;
         pointer-events: none;
         animation: munSpotIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       }
@@ -294,20 +324,20 @@
       .mun-spot-badge {
         padding: 4px 12px;
         border-radius: 999px;
-        font-size: 12.5px;
+        font-size: 13px;
         font-weight: 900;
         color: #ffffff;
         box-shadow: 0 4px 10px rgba(45, 43, 85, 0.14);
       }
       .mun-spot-stage {
         position: relative;
-        width: 184px;
-        height: 184px;
+        width: 220px;
+        height: 220px;
       }
       .mun-spot-frame {
         width: 100%;
         height: 100%;
-        border-radius: 32px;
+        border-radius: 36px;
         overflow: hidden;
         border: 5px solid #ffffff;
         background: #d8cdb8;
@@ -323,21 +353,21 @@
       }
       .mun-spot-sparkle {
         position: absolute;
-        font-size: 24px;
+        font-size: 26px;
         animation: munSparkleFloat 1.2s ease-in-out infinite alternate;
       }
       .mun-spot-sparkle.sp-1 { top: -8px; left: -10px; }
       .mun-spot-sparkle.sp-2 { top: -6px; right: -10px; animation-delay: -0.4s; }
-      .mun-spot-sparkle.sp-3 { bottom: 4px; right: -12px; animation-delay: -0.8s; font-size: 20px; }
+      .mun-spot-sparkle.sp-3 { bottom: 4px; right: -12px; animation-delay: -0.8s; font-size: 22px; }
       .mun-spot-text {
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 800;
         line-height: 1.35;
         color: #2d2b55;
         background: #ffffff;
         border: 2px solid #ffe27a;
         border-radius: 16px;
-        padding: 7px 10px;
+        padding: 8px 10px;
         width: 100%;
       }
       @keyframes munSpotIn {
@@ -356,13 +386,13 @@
         .mun-spotlight {
           right: 10px;
           bottom: 10px;
-          width: 176px;
-          padding: 9px 10px 10px;
-          border-radius: 22px;
+          width: 196px;
+          padding: 10px 10px 12px;
+          border-radius: 24px;
         }
-        .mun-spot-stage { width: 130px; height: 130px; }
-        .mun-spot-frame { border-radius: 24px; border-width: 4px; }
-        .mun-spot-text { font-size: 11.5px; padding: 5px 8px; }
+        .mun-spot-stage { width: 154px; height: 154px; }
+        .mun-spot-frame { border-radius: 26px; border-width: 4px; }
+        .mun-spot-text { font-size: 12px; padding: 6px 8px; }
       }
       @media (prefers-reduced-motion: reduce) {
         .mun-spotlight, .mun-mood-normal, .mun-mood-happy, .mun-mood-sad, .mun-mood-suspicious, .mun-spot-sparkle {
@@ -519,12 +549,33 @@
           <img src="${imgSrc}" alt="Mun ${meta.label}" />
         </div>
         <div style="min-width:0;">
-          <div style="font-size:14px; font-weight:900; color:#7a5200;">🐥 Mun • ${meta.label}</div>
-          <div style="font-size:12.5px; font-weight:700; color:#2d2b55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:250px;">
+          <div style="font-size:15px; font-weight:900; color:#7a5200;">🐥 Mun • ${meta.label}</div>
+          <div style="font-size:13px; font-weight:700; color:#2d2b55; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:240px;">
             ${munState.bubble}
           </div>
         </div>
       `;
+    }
+
+    const playAside = document.getElementById("play-mun-aside");
+    if (playAside) {
+      playAside.innerHTML = `
+        <div class="mun-aside-card">
+          <div style="font-size:15px; font-weight:900; color:#7a5200;">🐥 Gia sư AI Mun</div>
+          <span class="mini-pill" style="background:#fff; border-color:${meta.color}; font-size:12.5px;">${meta.label}</span>
+          <div class="mun-aside-frame ${meta.cls}" id="mun-play-aside-av" title="Nhấn để trò chuyện với Mun!">
+            <img src="${imgSrc}" alt="Mun ${meta.label}" />
+          </div>
+          <div class="mun-bubble" style="margin:2px 0 0; width:100%; font-size:13.5px;">${munState.bubble}</div>
+          <button type="button" class="btn-3d btn-yellow" id="mun-play-aside-chat" style="width:100%;">💬 Hỏi bài Mun</button>
+        </div>
+      `;
+      document.getElementById("mun-play-aside-av").addEventListener("click", () => {
+        resetIdleTimer(); MunSFX.chatPop(); openMunChat();
+      });
+      document.getElementById("mun-play-aside-chat").addEventListener("click", () => {
+        resetIdleTimer(); MunSFX.chatPop(); openMunChat();
+      });
     }
 
     const chatAv = document.getElementById("mun-chat-avatar");
