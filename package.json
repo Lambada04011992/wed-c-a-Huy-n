@@ -1,0 +1,13 @@
+{
+  "name": "kawaii-english-5-playland",
+  "version": "1.0.0",
+  "description": "Kawaii English 5 Playland (Global Success 5) with 20 interactive games, Phonics Racing, Block Blast, Mochi Pet, and AI Companion Mun.",
+  "type": "module",
+  "main": "ai-proxy-server.mjs",
+  "scripts": {
+    "start": "node ai-proxy-server.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

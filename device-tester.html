@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Device Tester • Kiểm thử giao diện Mobile &amp; Tablet</title>
+  <style>
+    :root {
+      --bg-canvas: #eef2f7;
+      --dot-color: #cbd5e1;
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-solid: #ffffff;
+      --border: #dbe3ee;
+      --ink: #0f172a;
+      --ink-sub: #475569;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --accent-ink: #1d4ed8;
+      --bezel-bg: #18181b;
+      --bezel-edge: #3f3f46;
+      --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+      --shadow-device: 0 28px 64px rgba(15, 23, 42, 0.24), 0 8px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    body.dark {
+      --bg-canvas: #0b1120;
+      --dot-color: #1e293b;
+      --surface: rgba(15, 23, 42, 0.92);
+      --surface-solid: #1e293b;
+      --border: #334155;
+      --ink: #f8fafc;
+      --ink-sub: #94a3b8;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.16);
+      --accent-ink: #7dd3fc;
+      --bezel-bg: #09090b;
+      --bezel-edge: #27272a;
+      --shadow-device: 0 28px 70px rgba(0, 0, 0, 0.65);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--ink); background: var(--bg-canvas); overflow: hidden; }
+
+    .app {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100vh;
+    }
+
+    /* TOP STUDIO TOOLBAR */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 16px;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      white-space: nowrap;
+    }
+
+    .brand-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #2563eb, #ec4899);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .url-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      min-width: 240px;
+      max-width: 560px;
+    }
+
+    .input, .select {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-solid);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .input:focus, .select:focus { border-color: var(--accent); }
+    .url-input { flex: 1; min-width: 120px; }
+
+    .btn {
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-solid);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .btn:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-primary { background: var(--accent); color: #ffffff; border-color: var(--accent); }
+    body.dark .btn-primary { color: #0f172a; }
+    .btn.active { background: var(--accent-soft); color: var(--accent-ink); border-color: var(--accent); }
+
+    .controls-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+    /* WORKSPACE LAYOUT */
+    .workspace {
+      display: grid;
+      grid-template-columns: 272px 1fr;
+      min-height: 0;
+      height: 100%;
+    }
+    @media (max-width: 860px) {
+      .workspace { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      .sidebar { max-height: 210px; border-right: none; border-bottom: 1px solid var(--border); }
+    }
+
+    /* LEFT DEVICE SIDEBAR */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .side-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--ink-sub);
+      margin-bottom: 8px;
+    }
+
+    .device-list { display: flex; flex-direction: column; gap: 6px; }
+    .device-btn {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 12px;
+      border: 1.5px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: inherit;
+      transition: background 0.14s ease, border-color 0.14s ease;
+    }
+    .device-btn:hover { background: var(--accent-soft); }
+    .device-btn.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+    .device-name { font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+    .device-dim { font-size: 12px; font-weight: 700; color: var(--ink-sub); font-variant-numeric: tabular-nums; }
+
+    .custom-box {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-canvas);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .dim-inputs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+    .dim-inputs input { width: 100%; text-align: center; padding: 0 6px; }
+
+    .drop-banner {
+      padding: 12px;
+      border-radius: 14px;
+      border: 2px dashed var(--border);
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-sub);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .drop-banner.dragover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+
+    /* STAGE CANVAS */
+    .stage {
+      position: relative;
+      overflow: auto;
+      background-image: radial-gradient(var(--dot-color) 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .stage-info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 7px 14px;
+      border-radius: 99px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-sub);
+      z-index: 5;
+    }
+
+    .badge-pill {
+      padding: 2px 9px;
+      border-radius: 99px;
+      background: var(--accent-soft);
+      color: var(--accent-ink);
+      font-weight: 800;
+    }
+
+    /* SINGLE DEVICE SHELL */
+    .device-viewport-wrap {
+      flex: 1;
+      display: flex;
+      width: 100%;
+      min-height: 0;
+    }
+
+    .device-sizer {
+      position: relative;
+      margin: auto;
+      flex-shrink: 0;
+      transition: width 0.24s ease, height 0.24s ease;
+    }
+
+    .device-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      transition: transform 0.2s ease;
+    }
+
+    .device-frame {
+      position: relative;
+      background: var(--bezel-bg);
+      border: 3px solid var(--bezel-edge);
+      box-shadow: var(--shadow-device);
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), height 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.25s ease, padding 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device-frame.framed-phone { border-radius: 44px; padding: 14px; }
+    .device-frame.framed-tablet { border-radius: 30px; padding: 16px; }
+    .device-frame.frameless { border-radius: 12px; padding: 0; background: #fff; border: 2px solid var(--border); }
+
+    /* Dynamic Island / Camera Notch */
+    .device-notch {
+      position: absolute;
+      z-index: 4;
+      background: #09090b;
+      border-radius: 99px;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .device-frame.framed-phone.portrait .device-notch { top: 22px; left: 50%; transform: translateX(-50%); width: 88px; height: 22px; }
+    .device-frame.framed-phone.landscape .device-notch { left: 22px; top: 50%; transform: translateY(-50%); width: 22px; height: 88px; }
+    .device-frame.framed-tablet .device-notch { top: 6px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; background: #52525b; }
+    .device-frame.frameless .device-notch { display: none; }
+
+    .device-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 30px;
+      overflow: hidden;
+      background: #ffffff;
+      position: relative;
+    }
+    .device-frame.framed-tablet .device-screen { border-radius: 16px; }
+    .device-frame.frameless .device-screen { border-radius: 10px; }
+
+    .device-screen iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #ffffff;
+    }
+
+    .touch-cursor-mode .device-screen iframe {
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28'><circle cx='14' cy='14' r='11' fill='rgba(37,99,235,0.28)' stroke='rgba(37,99,235,0.8)' stroke-width='2'/></svg>") 14 14, pointer;
+    }
+
+    /* MULTI-DEVICE COMPARISON GRID */
+    .multi-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 28px;
+      width: 100%;
+      padding-bottom: 30px;
+    }
+
+    .multi-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .multi-card-head {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .multi-frame-box {
+      overflow: hidden;
+      border-radius: 22px;
+      border: 6px solid var(--bezel-bg);
+      background: #ffffff;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">📱</div>
+        <div>
+          <div>Responsive Tester</div>
+          <div style="font-size:11px; font-weight:600; color:var(--ink-sub);">Xem trước Local HTML trên Phone &amp; Tablet</div>
+        </div>
+      </div>
+
+      <form class="url-bar" id="url-form">
+        <input type="text" class="input url-input" id="url-input" value="index.html" placeholder="Đường dẫn file local (vd: index.html) hoặc URL..." aria-label="Đường dẫn file HTML" />
+        <button type="submit" class="btn btn-primary" title="Tải trang">Mở</button>
+        <button type="button" class="btn" id="btn-reload" title="Tải lại khung hình">🔄</button>
+        <button type="button" class="btn" id="btn-open-tab" title="Mở trong tab mới">↗️</button>
+        <label class="btn" title="Chọn 1 hoặc nhiều file local (.html, .css, .js, ảnh)">
+          📂 Chọn File
+          <input type="file" id="file-picker" accept=".html,.htm,.css,.js,.png,.jpg,.jpeg,.webp,.svg,.gif" multiple hidden />
+        </label>
+        <label class="btn" title="Chọn cả thư mục web local">
+          📁 Thư mục
+          <input type="file" id="dir-picker" webkitdirectory directory multiple hidden />
+        </label>
+      </form>
+
+      <div class="controls-group">
+        <button type="button" class="btn active" id="btn-mode-single" title="Xem từng thiết bị">📱 1 Máy</button>
+        <button type="button" class="btn" id="btn-mode-multi" title="So sánh nhiều thiết bị cùng lúc">🪟 Nhiều Máy</button>
+        <button type="button" class="btn btn-primary" id="btn-rotate" title="Xoay ngang / Xoay dọc">🔄 Xoay ngang</button>
+        <select class="select" id="zoom-select" aria-label="Tỉ lệ thu phóng">
+          <option value="auto">🔍 Auto-Fit</option>
+          <option value="1.25">125%</option>
+          <option value="1">100%</option>
+          <option value="0.85">85%</option>
+          <option value="0.7">70%</option>
+          <option value="0.55">55%</option>
+        </select>
+        <button type="button" class="btn active" id="btn-bezel" title="Bật/tắt khung viền máy">🖼️ Khung máy</button>
+        <button type="button" class="btn" id="btn-touch" title="Bật/tắt con trỏ mô phỏng chạm tay">👆 Chạm</button>
+        <button type="button" class="btn" id="btn-theme" title="Chuyển giao diện Sáng / Tối">🌙</button>
+      </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div>
+          <div class="side-label">Mở nhanh File trong dự án</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button type="button" class="btn" style="justify-content:flex-start;" data-quick="index.html">📄 index.html (Web chính)</button>
+            <button type="button" class="btn" style="justify-content:flex-start;" data-quick="english5-playground/index.html">📄 english5-playground/index.html</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="side-label">📱 Điện thoại (Phones)</div>
+          <div class="device-list" id="phone-list"></div>
+        </div>
+
+        <div>
+          <div class="side-label">📟 Máy tính bảng (Tablets)</div>
+          <div class="device-list" id="tablet-list"></div>
+        </div>
+
+        <div>
+          <div class="side-label">📏 Kích thước tuỳ chỉnh (px)</div>
+          <div class="custom-box">
+            <div class="dim-inputs">
+              <input type="number" class="input" id="custom-w" min="240" max="2560" value="393" aria-label="Chiều rộng px" />
+              <button type="button" class="btn" id="btn-swap-custom" style="padding:0 8px;" title="Đảo rộng & cao">⇄</button>
+              <input type="number" class="input" id="custom-h" min="320" max="2560" value="852" aria-label="Chiều cao px" />
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-apply-custom" style="width:100%; justify-content:center;">Áp dụng kích thước</button>
+          </div>
+        </div>
+
+        <div class="drop-banner" id="drop-zone">
+          📥 Kéo thả file <strong>.html</strong> (hoặc cả file .js/.css đi kèm) vào đây để test ngay!
+        </div>
+      </aside>
+
+      <!-- STAGE -->
+      <main class="stage" id="stage">
+        <div class="stage-info-bar" id="stage-info">
+          <span id="info-device">iPhone 15 / 16</span>
+          <span class="badge-pill" id="info-dims">393 × 852 px</span>
+          <span class="badge-pill" id="info-orient">Dọc (Portrait)</span>
+          <span class="badge-pill" id="info-bp">Mobile</span>
+          <span id="info-scale">Zoom: 100%</span>
+          <span id="info-source" style="color:var(--ink);">Nguồn: index.html</span>
+        </div>
+
+        <div class="device-viewport-wrap" id="viewport-wrap"></div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DEVICE PRESETS & PREFERENCES
+    // =========================================================================
+    const DEVICES = [
+      { id: "iphone-se", name: "iPhone SE", kind: "phone", w: 375, h: 667, icon: "📱" },
+      { id: "iphone-15", name: "iPhone 15 / 16", kind: "phone", w: 393, h: 852, icon: "📱" },
+      { id: "iphone-pro-max", name: "iPhone 16 Pro Max", kind: "phone", w: 440, h: 956, icon: "📱" },
+      { id: "galaxy-s24", name: "Galaxy S24", kind: "phone", w: 360, h: 780, icon: "📲" },
+      { id: "pixel-8", name: "Google Pixel 8", kind: "phone", w: 412, h: 915, icon: "📲" },
+      { id: "ipad-mini", name: "iPad Mini", kind: "tablet", w: 744, h: 1133, icon: "📟" },
+      { id: "ipad-air", name: "iPad Air / Pro 11\"", kind: "tablet", w: 834, h: 1194, icon: "📟" },
+      { id: "galaxy-tab", name: "Galaxy Tab S9", kind: "tablet", w: 800, h: 1280, icon: "📟" },
+      { id: "ipad-pro-12", name: "iPad Pro 12.9\"", kind: "tablet", w: 1024, h: 1366, icon: "🖥️" }
+    ];
+
+    const MULTI_COMPARE_IDS = ["galaxy-s24", "iphone-15", "ipad-mini", "ipad-pro-12"];
+    const PREFS_KEY = "ui_device_tester_prefs_v1";
+
+    let appState = {
+      deviceId: "iphone-15",
+      customW: 393,
+      customH: 852,
+      landscape: false,
+      viewMode: "single", // "single" | "multi"
+      zoom: "auto",
+      showBezel: true,
+      touchCursor: false,
+      dark: false,
+      sourceType: "url", // "url" | "blob"
+      sourceLabel: "index.html",
+      sourceUrl: "index.html",
+      blobUrl: ""
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(PREFS_KEY) || "null");
+      if (saved) {
+        appState = { ...appState, ...saved, sourceType: "url", blobUrl: "" };
+      }
+    } catch {}
+
+    function savePrefs() {
+      try {
+        const { blobUrl, ...persistable } = appState;
+        localStorage.setItem(PREFS_KEY, JSON.stringify(persistable));
+      } catch {}
+    }
+
+    // =========================================================================
+    // 2. VIRTUAL LOCAL BUNDLER (Handles Local HTML + JS/CSS/Images via Picker/Drop)
+    // =========================================================================
+    let activeBlobUrls = [];
+    function revokeBlobs() {
+      activeBlobUrls.forEach(u => { try { URL.revokeObjectURL(u); } catch {} });
+      activeBlobUrls = [];
+    }
+
+    async function loadLocalFilesBundle(fileList) {
+      const files = Array.from(fileList || []);
+      if (files.length === 0) return;
+
+      const htmlFiles = files.filter(f => /\.html?$/i.test(f.name));
+      if (htmlFiles.length === 0) {
+        alert("Vui lòng chọn ít nhất 1 file .html hoặc .htm để xem trước!");
+        return;
+      }
+
+      // Prefer root index.html if multiple HTML files were selected from a folder
+      const mainHtml = htmlFiles.find(f => f.name.toLowerCase() === "index.html") || htmlFiles[0];
+      revokeBlobs();
+
+      const assetMap = {};
+      for (const f of files) {
+        if (f === mainHtml) continue;
+        const url = URL.createObjectURL(f);
+        activeBlobUrls.push(url);
+        const rel = (f.webkitRelativePath || f.name).replace(/^[^/]+\//, "");
+        assetMap[f.name] = url;
+        assetMap[rel] = url;
+      }
+
+      let htmlText = await mainHtml.text();
+
+      // Rewrite relative <script src="...">, <link href="...">, <img src="..."> to in-memory Blob URLs
+      htmlText = htmlText.replace(/(<(?:script|img|source|audio|video)\b[^>]*?\bsrc=["'])([^"']+)(["'])/gi, (m, p1, ref, p3) => {
+        if (/^(https?:|data:|blob:|\/\/)/i.test(ref)) return m;
+        const cleanRef = ref.replace(/^\.\//, "");
+        const mapped = assetMap[cleanRef] || assetMap[cleanRef.split("/").pop()];
+        return mapped ? `${p1}${mapped}${p3}` : m;
+      });
+
+      htmlText = htmlText.replace(/(<link\b[^>]*?\bhref=["'])([^"']+)(["'])/gi, (m, p1, ref, p3) => {
+        if (/^(https?:|data:|blob:|\/\/)/i.test(ref)) return m;
+        const cleanRef = ref.replace(/^\.\//, "");
+        const mapped = assetMap[cleanRef] || assetMap[cleanRef.split("/").pop()];
+        return mapped ? `${p1}${mapped}${p3}` : m;
+      });
+
+      const htmlBlob = new Blob([htmlText], { type: "text/html;charset=utf-8" });
+      const mainUrl = URL.createObjectURL(htmlBlob);
+      activeBlobUrls.push(mainUrl);
+
+      appState.sourceType = "blob";
+      appState.blobUrl = mainUrl;
+      appState.sourceLabel = `${mainHtml.name} (Local File)`;
+      document.getElementById("url-input").value = appState.sourceLabel;
+      renderStage();
+    }
+
+    function loadByUrl(pathOrUrl) {
+      const val = (pathOrUrl || "").trim();
+      if (!val) return;
+      appState.sourceType = "url";
+      appState.sourceUrl = val;
+      appState.sourceLabel = val;
+      document.getElementById("url-input").value = val;
+      savePrefs();
+      renderStage();
+    }
+
+    function getActiveSrc() {
+      return appState.sourceType === "blob" && appState.blobUrl ? appState.blobUrl : appState.sourceUrl;
+    }
+
+    // =========================================================================
+    // 3. DIMENSIONS & RENDERING
+    // =========================================================================
+    function getActiveDeviceDims() {
+      if (appState.deviceId === "custom") {
+        const w = appState.landscape ? Math.max(appState.customW, appState.customH) : appState.customW;
+        const h = appState.landscape ? Math.min(appState.customW, appState.customH) : appState.customH;
+        // Actually honor exact swap on landscape toggle from user's base customW/H:
+        return {
+          name: "Custom Viewport",
+          kind: (appState.landscape ? appState.customH : appState.customW) >= 640 ? "tablet" : "phone",
+          w: appState.landscape ? appState.customH : appState.customW,
+          h: appState.landscape ? appState.customW : appState.customH
+        };
+      }
+      const d = DEVICES.find(x => x.id === appState.deviceId) || DEVICES[1];
+      return {
+        name: d.name,
+        kind: d.kind,
+        w: appState.landscape ? d.h : d.w,
+        h: appState.landscape ? d.w : d.h
+      };
+    }
+
+    function getBreakpointLabel(w) {
+      if (w < 480) return "Mobile Nhỏ (<480px)";
+      if (w < 640) return "Mobile Lớn (<640px)";
+      if (w < 860) return "Tablet Dọc (<860px)";
+      if (w < 1024) return "Tablet Ngang (<1024px)";
+      return "Desktop / iPad Pro (≥1024px)";
+    }
+
+    function computeScale(viewportW, viewportH, bezelPad) {
+      if (appState.zoom !== "auto") return Number(appState.zoom) || 1;
+      const stage = document.getElementById("stage");
+      const availW = Math.max(260, stage.clientWidth - 48);
+      const availH = Math.max(260, stage.clientHeight - 86);
+      const outerW = viewportW + bezelPad * 2 + 6;
+      const outerH = viewportH + bezelPad * 2 + 6;
+      const s = Math.min(1, availW / outerW, availH / outerH);
+      return Math.max(0.28, Math.round(s * 100) / 100);
+    }
+
+    function renderDeviceSidebar() {
+      const renderList = (elId, kind) => {
+        const el = document.getElementById(elId);
+        el.innerHTML = DEVICES.filter(d => d.kind === kind).map(d => {
+          const dw = appState.landscape ? d.h : d.w;
+          const dh = appState.landscape ? d.w : d.h;
+          const active = appState.deviceId === d.id ? "active" : "";
+          return `
+            <button type="button" class="device-btn ${active}" data-dev="${d.id}">
+              <span class="device-name"><span>${d.icon}</span><span>${d.name}</span></span>
+              <span class="device-dim">${dw}×${dh}</span>
+            </button>
+          `;
+        }).join("");
+      };
+
+      renderList("phone-list", "phone");
+      renderList("tablet-list", "tablet");
+
+      document.querySelectorAll("[data-dev]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          appState.deviceId = btn.dataset.dev;
+          const d = DEVICES.find(x => x.id === appState.deviceId);
+          if (d) {
+            appState.customW = d.w;
+            appState.customH = d.h;
+            document.getElementById("custom-w").value = d.w;
+            document.getElementById("custom-h").value = d.h;
+          }
+          savePrefs();
+          renderAll();
+        });
+      });
+    }
+
+    function syncToolbarButtons() {
+      document.getElementById("btn-mode-single").classList.toggle("active", appState.viewMode === "single");
+      document.getElementById("btn-mode-multi").classList.toggle("active", appState.viewMode === "multi");
+      document.getElementById("btn-rotate").textContent = appState.landscape ? "🔄 Xoay dọc" : "🔄 Xoay ngang";
+      document.getElementById("btn-bezel").classList.toggle("active", appState.showBezel);
+      document.getElementById("btn-touch").classList.toggle("active", appState.touchCursor);
+      document.getElementById("zoom-select").value = String(appState.zoom);
+      document.body.classList.toggle("dark", appState.dark);
+      document.getElementById("btn-theme").textContent = appState.dark ? "☀️" : "🌙";
+      document.getElementById("stage").classList.toggle("touch-cursor-mode", appState.touchCursor);
+    }
+
+    function renderStage(reloadIframe = true) {
+      const wrap = document.getElementById("viewport-wrap");
+      const src = getActiveSrc();
+
+      if (appState.viewMode === "single") {
+        const dims = getActiveDeviceDims();
+        const bezelPad = appState.showBezel ? (dims.kind === "tablet" ? 16 : 14) : 0;
+        const scale = computeScale(dims.w, dims.h, bezelPad);
+
+        document.getElementById("info-device").textContent = dims.name;
+        document.getElementById("info-dims").textContent = `${dims.w} × ${dims.h} px`;
+        document.getElementById("info-orient").textContent = appState.landscape ? "Ngang (Landscape)" : "Dọc (Portrait)";
+        document.getElementById("info-bp").textContent = getBreakpointLabel(dims.w);
+        document.getElementById("info-scale").textContent = `Zoom: ${Math.round(scale * 100)}%`;
+        document.getElementById("info-source").textContent = `Nguồn: ${appState.sourceLabel}`;
+
+        const outerW = dims.w + bezelPad * 2 + 6;
+        const outerH = dims.h + bezelPad * 2 + 6;
+        const sizerW = Math.round(outerW * scale);
+        const sizerH = Math.round(outerH * scale);
+        const frameClass = appState.showBezel
+          ? `framed-${dims.kind} ${appState.landscape ? "landscape" : "portrait"}`
+          : "frameless";
+
+        const existingFrame = document.getElementById("single-device-frame");
+        if (!reloadIframe && existingFrame) {
+          existingFrame.className = `device-frame ${frameClass}`;
+          existingFrame.style.width = `${outerW}px`;
+          existingFrame.style.height = `${outerH}px`;
+          const sizer = document.getElementById("single-sizer");
+          if (sizer) {
+            sizer.style.width = `${sizerW}px`;
+            sizer.style.height = `${sizerH}px`;
+          }
+          const scaler = document.getElementById("single-scaler");
+          if (scaler) scaler.style.transform = `scale(${scale})`;
+          return;
+        }
+
+        wrap.style.alignItems = "stretch";
+        wrap.innerHTML = `
+          <div class="device-sizer" id="single-sizer" style="width:${sizerW}px; height:${sizerH}px;">
+            <div class="device-scaler" id="single-scaler" style="transform:scale(${scale});">
+              <div class="device-frame ${frameClass}" id="single-device-frame" style="width:${outerW}px; height:${outerH}px;">
+                <div class="device-notch" aria-hidden="true"></div>
+                <div class="device-screen">
+                  <iframe id="preview-iframe" src="${src}" title="Mobile &amp; Tablet Preview"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        // Multi-device side-by-side comparison mode
+        document.getElementById("info-device").textContent = "So sánh 4 thiết bị cùng lúc";
+        document.getElementById("info-dims").textContent = "Phone + Tablet";
+        document.getElementById("info-orient").textContent = appState.landscape ? "Ngang (Landscape)" : "Dọc (Portrait)";
+        document.getElementById("info-bp").textContent = "Multi-Viewport";
+        document.getElementById("info-scale").textContent = "Auto Thumbnail";
+        document.getElementById("info-source").textContent = `Nguồn: ${appState.sourceLabel}`;
+
+        wrap.style.alignItems = "flex-start";
+        wrap.innerHTML = `
+          <div class="multi-grid">
+            ${MULTI_COMPARE_IDS.map(id => {
+              const d = DEVICES.find(x => x.id === id);
+              const w = appState.landscape ? d.h : d.w;
+              const h = appState.landscape ? d.w : d.h;
+              const targetBoxW = d.kind === "tablet" ? 410 : 285;
+              const scale = Math.min(0.75, targetBoxW / w);
+              const boxW = Math.round(w * scale) + 12;
+              const boxH = Math.round(h * scale) + 12;
+              return `
+                <div class="multi-card">
+                  <div class="multi-card-head">
+                    <span>${d.icon} ${d.name}</span>
+                    <span class="badge-pill">${w}×${h}</span>
+                  </div>
+                  <div class="multi-frame-box" style="width:${boxW}px; height:${boxH}px;">
+                    <iframe src="${src}" title="${d.name}" style="width:${w}px; height:${h}px; border:none; transform:scale(${scale}); transform-origin:top left;"></iframe>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+    }
+
+    function renderAll(reloadIframe = true) {
+      syncToolbarButtons();
+      renderDeviceSidebar();
+      renderStage(reloadIframe);
+    }
+
+    // =========================================================================
+    // 4. EVENT HANDLERS
+    // =========================================================================
+    document.getElementById("url-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      loadByUrl(document.getElementById("url-input").value);
+    });
+
+    document.getElementById("btn-reload").addEventListener("click", () => {
+      const f = document.getElementById("preview-iframe");
+      if (f && appState.viewMode === "single") {
+        f.src = getActiveSrc();
+      } else {
+        renderStage(true);
+      }
+    });
+
+    document.getElementById("btn-open-tab").addEventListener("click", () => {
+      window.open(getActiveSrc(), "_blank", "noopener");
+    });
+
+    document.getElementById("file-picker").addEventListener("change", (e) => loadLocalFilesBundle(e.target.files));
+    document.getElementById("dir-picker").addEventListener("change", (e) => loadLocalFilesBundle(e.target.files));
+
+    document.querySelectorAll("[data-quick]").forEach(btn => {
+      btn.addEventListener("click", () => loadByUrl(btn.dataset.quick));
+    });
+
+    document.getElementById("btn-mode-single").addEventListener("click", () => {
+      appState.viewMode = "single"; savePrefs(); renderAll(true);
+    });
+    document.getElementById("btn-mode-multi").addEventListener("click", () => {
+      appState.viewMode = "multi"; savePrefs(); renderAll(true);
+    });
+
+    document.getElementById("btn-rotate").addEventListener("click", () => {
+      appState.landscape = !appState.landscape;
+      savePrefs();
+      renderAll(appState.viewMode === "multi");
+    });
+
+    document.getElementById("zoom-select").addEventListener("change", (e) => {
+      appState.zoom = e.target.value;
+      savePrefs();
+      renderAll(false);
+    });
+
+    document.getElementById("btn-bezel").addEventListener("click", () => {
+      appState.showBezel = !appState.showBezel;
+      savePrefs();
+      renderAll(false);
+    });
+
+    document.getElementById("btn-touch").addEventListener("click", () => {
+      appState.touchCursor = !appState.touchCursor;
+      savePrefs();
+      syncToolbarButtons();
+    });
+
+    document.getElementById("btn-theme").addEventListener("click", () => {
+      appState.dark = !appState.dark;
+      savePrefs();
+      syncToolbarButtons();
+    });
+
+    document.getElementById("btn-swap-custom").addEventListener("click", () => {
+      const wInp = document.getElementById("custom-w");
+      const hInp = document.getElementById("custom-h");
+      const tmp = wInp.value; wInp.value = hInp.value; hInp.value = tmp;
+    });
+
+    document.getElementById("btn-apply-custom").addEventListener("click", () => {
+      appState.deviceId = "custom";
+      appState.landscape = false;
+      appState.customW = Math.max(240, Math.min(2560, Number(document.getElementById("custom-w").value) || 393));
+      appState.customH = Math.max(320, Math.min(2560, Number(document.getElementById("custom-h").value) || 852));
+      savePrefs();
+      renderAll(false);
+    });
+
+    // Drag & Drop support on sidebar dropzone & whole stage
+    const dz = document.getElementById("drop-zone");
+    dz.addEventListener("click", () => document.getElementById("file-picker").click());
+    [dz, document.body].forEach(el => {
+      el.addEventListener("dragover", (e) => { e.preventDefault(); dz.classList.add("dragover"); });
+      el.addEventListener("dragleave", () => dz.classList.remove("dragover"));
+      el.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dz.classList.remove("dragover");
+        if (e.dataTransfer?.files?.length) loadLocalFilesBundle(e.dataTransfer.files);
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (appState.viewMode === "single" && appState.zoom === "auto") renderStage(false);
+    });
+
+    // Init
+    document.getElementById("url-input").value = appState.sourceUrl || "index.html";
+    document.getElementById("custom-w").value = appState.customW;
+    document.getElementById("custom-h").value = appState.customH;
+    renderAll(true);
+  </script>
+</body>
+</html>
