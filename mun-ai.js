@@ -43,6 +43,8 @@
 
   let idleTimer = null;
   let revertTimer = null;
+  let spotlightTimer = null;
+  let spotlightLeaveTimer = null;
 
   // =========================================================================
   // WEB AUDIO API EMOTION SOUND EFFECTS
@@ -131,6 +133,11 @@
       }, autoRevertMs);
     }
     renderMunWidgets();
+    if (mood !== "normal" && !munState.chatOpen) {
+      showReactionSpotlight(mood, munState.bubble, mood === "suspicious" ? 0 : 2350);
+    } else if (mood === "normal") {
+      hideReactionSpotlight();
+    }
   }
 
   function resetIdleTimer() {
@@ -138,6 +145,7 @@
     if (munState.mood === "suspicious") {
       munState.mood = "normal";
       munState.bubble = "A, bạn quay lại rồi! Mình học tiếp thôi nào! 🐥✨";
+      hideReactionSpotlight();
       renderMunWidgets();
     }
     idleTimer = setTimeout(() => {
@@ -170,16 +178,16 @@
         text-align: center;
       }
       .mun-avatar-frame {
-        width: min(215px, 60vw);
-        height: min(215px, 60vw);
-        margin: 4px auto 2px;
-        border-radius: 32px;
+        width: min(240px, 66vw);
+        height: min(240px, 66vw);
+        margin: 4px auto 4px;
+        border-radius: 34px;
         overflow: hidden;
         border: 5px solid #ffffff;
-        box-shadow: 0 12px 28px rgba(217, 155, 11, 0.24);
+        box-shadow: 0 14px 32px rgba(217, 155, 11, 0.25);
         background: #d8cdb8;
         cursor: pointer;
-        transition: transform 0.22s ease;
+        transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease;
       }
       .mun-avatar-frame img {
         width: 100%;
@@ -191,14 +199,14 @@
         display: block;
       }
       .mun-mood-normal { animation: munBreathe 3.2s ease-in-out infinite; }
-      .mun-mood-happy { animation: munHop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 2; box-shadow: 0 0 0 4px #86efac, 0 12px 28px rgba(16, 185, 129, 0.28); }
-      .mun-mood-sad { animation: munDroop 0.8s ease forwards; box-shadow: 0 0 0 4px #fecdd3; }
-      .mun-mood-suspicious { animation: munPeek 1.1s ease-in-out infinite alternate; box-shadow: 0 0 0 4px #fde68a; }
+      .mun-mood-happy { animation: munHopBig 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) 2; box-shadow: 0 0 0 6px #86efac, 0 18px 36px rgba(16, 185, 129, 0.34); }
+      .mun-mood-sad { animation: munDroopBig 0.85s ease forwards; box-shadow: 0 0 0 6px #fecdd3, 0 16px 32px rgba(244, 63, 94, 0.24); }
+      .mun-mood-suspicious { animation: munPeekBig 1.05s ease-in-out infinite alternate; box-shadow: 0 0 0 6px #fde68a, 0 16px 32px rgba(245, 158, 11, 0.28); }
 
       @keyframes munBreathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.02); } }
-      @keyframes munHop { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-13px) scale(1.06); } }
-      @keyframes munDroop { 0% { transform: translateY(0); } 50% { transform: translateY(5px) rotate(-3deg); } 100% { transform: translateY(2px) rotate(0deg); } }
-      @keyframes munPeek { 0% { transform: rotate(-4deg) scale(1); } 100% { transform: rotate(4deg) scale(1.03); } }
+      @keyframes munHopBig { 0%, 100% { transform: translateY(0) scale(1.08); } 45% { transform: translateY(-16px) scale(1.16) rotate(-3deg); } 75% { transform: translateY(-6px) scale(1.12) rotate(3deg); } }
+      @keyframes munDroopBig { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(6px) scale(1.09) rotate(-4deg); } 100% { transform: translateY(2px) scale(1.07) rotate(0deg); } }
+      @keyframes munPeekBig { 0% { transform: rotate(-5deg) scale(1.06); } 100% { transform: rotate(5deg) scale(1.11); } }
 
       .mun-bubble {
         position: relative;
@@ -227,14 +235,15 @@
         max-width: min(410px, 100%);
       }
       .play-mun-thumb {
-        width: 78px;
-        height: 78px;
-        border-radius: 18px;
+        width: 88px;
+        height: 88px;
+        border-radius: 20px;
         overflow: hidden;
-        border: 3px solid #ffffff;
-        box-shadow: 0 4px 12px rgba(45, 43, 85, 0.14);
+        border: 3.5px solid #ffffff;
+        box-shadow: 0 6px 14px rgba(45, 43, 85, 0.16);
         background: #d8cdb8;
         flex-shrink: 0;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       .play-mun-thumb img {
         width: 100%;
@@ -246,13 +255,119 @@
         display: block;
       }
       .mun-chat-avatar-lg {
-        width: 84px;
-        height: 84px;
-        border-radius: 22px;
+        width: 92px;
+        height: 92px;
+        border-radius: 24px;
       }
       @media (max-width: 600px) {
-        .play-mun-thumb { width: 64px; height: 64px; }
-        .mun-chat-avatar-lg { width: 68px; height: 68px; }
+        .play-mun-thumb { width: 70px; height: 70px; }
+        .mun-chat-avatar-lg { width: 74px; height: 74px; }
+      }
+
+      /* Floating Post-Answer Mascot Reaction Spotlight (Non-blocking!) */
+      .mun-spotlight {
+        position: fixed;
+        right: 22px;
+        bottom: 20px;
+        z-index: 88;
+        width: 246px;
+        padding: 12px 14px 14px;
+        border-radius: 28px;
+        background: linear-gradient(160deg, rgba(255, 254, 245, 0.97), rgba(255, 242, 250, 0.96));
+        border: 4px solid #ffffff;
+        box-shadow: 0 18px 44px rgba(45, 43, 85, 0.24);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        pointer-events: none;
+        animation: munSpotIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+      .mun-spotlight.is-interactive {
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      .mun-spotlight.is-leaving {
+        animation: munSpotOut 0.28s ease forwards;
+      }
+      .mun-spot-badge {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 900;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(45, 43, 85, 0.14);
+      }
+      .mun-spot-stage {
+        position: relative;
+        width: 184px;
+        height: 184px;
+      }
+      .mun-spot-frame {
+        width: 100%;
+        height: 100%;
+        border-radius: 32px;
+        overflow: hidden;
+        border: 5px solid #ffffff;
+        background: #d8cdb8;
+      }
+      .mun-spot-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 44%;
+        transform: scale(1.26);
+        transform-origin: center 45%;
+        display: block;
+      }
+      .mun-spot-sparkle {
+        position: absolute;
+        font-size: 24px;
+        animation: munSparkleFloat 1.2s ease-in-out infinite alternate;
+      }
+      .mun-spot-sparkle.sp-1 { top: -8px; left: -10px; }
+      .mun-spot-sparkle.sp-2 { top: -6px; right: -10px; animation-delay: -0.4s; }
+      .mun-spot-sparkle.sp-3 { bottom: 4px; right: -12px; animation-delay: -0.8s; font-size: 20px; }
+      .mun-spot-text {
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.35;
+        color: #2d2b55;
+        background: #ffffff;
+        border: 2px solid #ffe27a;
+        border-radius: 16px;
+        padding: 7px 10px;
+        width: 100%;
+      }
+      @keyframes munSpotIn {
+        0% { opacity: 0; transform: translateY(34px) scale(0.58); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes munSpotOut {
+        0% { opacity: 1; transform: translateY(0) scale(1); }
+        100% { opacity: 0; transform: translateY(20px) scale(0.84); }
+      }
+      @keyframes munSparkleFloat {
+        0% { transform: translateY(0) scale(0.9) rotate(-8deg); }
+        100% { transform: translateY(-9px) scale(1.18) rotate(10deg); }
+      }
+      @media (max-width: 640px) {
+        .mun-spotlight {
+          right: 10px;
+          bottom: 10px;
+          width: 176px;
+          padding: 9px 10px 10px;
+          border-radius: 22px;
+        }
+        .mun-spot-stage { width: 130px; height: 130px; }
+        .mun-spot-frame { border-radius: 24px; border-width: 4px; }
+        .mun-spot-text { font-size: 11.5px; padding: 5px 8px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mun-spotlight, .mun-mood-normal, .mun-mood-happy, .mun-mood-sad, .mun-mood-suspicious, .mun-spot-sparkle {
+          animation: none !important;
+        }
       }
 
       /* Chat Modal */
@@ -421,6 +536,63 @@
     if (chatMoodLbl) chatMoodLbl.textContent = `${meta.label} • Model: ${munState.activeModel}`;
   }
 
+  function hideReactionSpotlight() {
+    clearTimeout(spotlightTimer);
+    clearTimeout(spotlightLeaveTimer);
+    const old = document.getElementById("mun-reaction-spotlight");
+    if (old) old.remove();
+  }
+
+  function showReactionSpotlight(mood, text, autoHideMs = 2350) {
+    hideReactionSpotlight();
+    const meta = MUN_MOOD_META[mood] || MUN_MOOD_META.normal;
+    const imgSrc = MUN_ASSETS[mood] || MUN_ASSETS.normal;
+    const sparks = mood === "happy"
+      ? ["🎉", "✨", "🌸"]
+      : mood === "sad"
+      ? ["💛", "💪", "✨"]
+      : ["🤨", "❓", "💡"];
+    const badgeTitle = mood === "happy"
+      ? "🎉 CHUẨN RỒI!"
+      : mood === "sad"
+      ? "🥺 CỐ LÊN NHÉ!"
+      : "🤨 ĐANG ĐỢI BÉ NÈ";
+
+    const box = document.createElement("div");
+    box.id = "mun-reaction-spotlight";
+    box.className = `mun-spotlight${mood === "suspicious" ? " is-interactive" : ""}`;
+    box.innerHTML = `
+      <div class="mun-spot-badge" style="background:${meta.color};">${badgeTitle}</div>
+      <div class="mun-spot-stage">
+        <span class="mun-spot-sparkle sp-1">${sparks[0]}</span>
+        <span class="mun-spot-sparkle sp-2">${sparks[1]}</span>
+        <span class="mun-spot-sparkle sp-3">${sparks[2]}</span>
+        <div class="mun-spot-frame ${meta.cls}">
+          <img src="${imgSrc}" alt="Mun ${meta.label}" />
+        </div>
+      </div>
+      <div class="mun-spot-text">${text || ""}</div>
+    `;
+    if (mood === "suspicious") {
+      box.title = "Nhấn để hỏi gợi ý từ Mun!";
+      box.addEventListener("click", (e) => {
+        e.stopPropagation();
+        hideReactionSpotlight();
+        openMunChat();
+      });
+    }
+    document.body.appendChild(box);
+
+    if (autoHideMs > 0) {
+      spotlightTimer = setTimeout(() => {
+        box.classList.add("is-leaving");
+        spotlightLeaveTimer = setTimeout(() => {
+          if (box.parentNode) box.remove();
+        }, 280);
+      }, autoHideMs);
+    }
+  }
+
   // =========================================================================
   // CHAT WITH MUN (REAL GEMINI API VIA PROXY OR SESSION KEY)
   // =========================================================================
@@ -447,6 +619,7 @@
 
   function openMunChat() {
     munState.chatOpen = true;
+    hideReactionSpotlight();
     resetIdleTimer();
     const bd = ensureChatModal();
     bd.classList.remove("hidden");
