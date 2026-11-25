@@ -21,12 +21,12 @@ export function applyCors(req, res) {
 }
 
 export function isAiConfigured() {
-  const key = process.env.GEMINI_API_KEY || "";
+  const key = (process.env.GEMINI_API_KEY || "").trim();
   return Boolean(key && key !== "your_gemini_api_key_here");
 }
 
 export async function generateWithFallback(bodyObj) {
-  const apiKey = process.env.GEMINI_API_KEY || "";
+  const apiKey = (process.env.GEMINI_API_KEY || "").trim();
   if (!isAiConfigured()) {
     const err = new Error("MISSING_API_KEY");
     err.status = 503;

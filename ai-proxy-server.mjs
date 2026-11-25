@@ -27,7 +27,7 @@ if (fs.existsSync(envPath)) {
 }
 
 const PORT = Number(process.env.PORT || 3001);
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+const GEMINI_API_KEY = (process.env.GEMINI_API_KEY || "").trim();
 const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3-flash-preview";
 const FALLBACK_MODELS = (process.env.GEMINI_FALLBACK_MODELS || "gemini-3.5-flash-lite,gemini-3.1-flash-lite-preview")
   .split(",").map(s => s.trim()).filter(Boolean);
